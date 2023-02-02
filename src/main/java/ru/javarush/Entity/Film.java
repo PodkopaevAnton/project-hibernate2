@@ -1,4 +1,4 @@
-package ru.javarush.golf.podkopaev.Entity;
+package ru.javarush.Entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

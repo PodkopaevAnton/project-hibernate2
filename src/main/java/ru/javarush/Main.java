@@ -1,4 +1,4 @@
-package ru.javarush.golf.podkopaev;
+package ru.javarush;
 
 public class Main {
     public static void main(String[] args) {

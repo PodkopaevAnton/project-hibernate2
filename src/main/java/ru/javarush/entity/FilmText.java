@@ -1,4 +1,4 @@
-package ru.javarush.Entity;
+package ru.javarush.entity;
 
 public class FilmText {
 

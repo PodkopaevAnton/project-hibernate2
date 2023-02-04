@@ -1,12 +1,14 @@
 package ru.javarush.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.Year;
 import java.util.Set;
 
 @Entity
@@ -14,41 +16,52 @@ import java.util.Set;
 public class Film {
     @Id
     @Column(name = "film_id")
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Short id;
 
     @Column(name = "title")
     private String title;
 
-    @Column(name = "description")
+    @Column(name = "description",columnDefinition = "text")
+    @Type(type = "text")
     private String description;
 
-    @Column(name = "release_year")
-    private Date releaseYear;
+    @Column(name = "release_year",columnDefinition = "year")
+    private Year releaseYear;
 
-    @Column(name = "language_id")
-    private Integer languageId;
+    @ManyToOne
+    @JoinColumn(name = "language_id")
+    private Language languageId;
 
-    @Column(name = "original_language_id")
-    private Integer originalLanguageId;
+    @ManyToOne
+    @JoinColumn(name = "original_language_id")
+    private Language originalLanguageId;
 
     @Column(name = "rental_duration")
-    private Integer rentalDuration;
+    private Byte rentalDuration;
 
     @Column(name = "rental_rate")
-    private Double rentalRate;
+    private BigDecimal rentalRate;
 
     @Column(name = "length")
-    private Integer length;
+    private Short length;
 
     @Column(name = "replacement_cost")
-    private Double replacementCost;
+    private BigDecimal replacementCost;
 
-    @Column(name = "rating")
-    private Enum rating;
+    @Column(name = "rating",columnDefinition = "enum('G', 'PG', 'PG-13', 'R', 'NC-17')")
+    private Rating rating;
 
-    @Column(name = "special_features")
-    private Set<String> specialFeatures;
+    @Column(name = "special_features",columnDefinition = "set('Trailers', 'Commentaries', 'Deleted Scenes', 'Behind the Scenes')")
+    private String specialFeatures;
 
     @Column(name = "last_update")
-    private Timestamp lastUpdate;
+    @UpdateTimestamp
+    private LocalDateTime lastUpdate;
+
+    @ManyToMany
+    @JoinTable(name = "film_actor",joinColumns = @JoinColumn(name = "film_id",referencedColumnName = "film_id"),
+    inverseJoinColumns=@JoinColumn(name = "actor_id",referencedColumnName = "actor_id"))
+    private Set<Actor> actors;
+
 }

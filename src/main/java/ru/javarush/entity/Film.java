@@ -5,11 +5,13 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.Year;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
 
 @Entity
 @Table(name = "film", schema = "movie")
@@ -27,15 +29,16 @@ public class Film {
     private String description;
 
     @Column(name = "release_year",columnDefinition = "year")
+    @Convert(converter = YearAttributeConverter.class)
     private Year releaseYear;
 
     @ManyToOne
     @JoinColumn(name = "language_id")
-    private Language languageId;
+    private Language language;
 
     @ManyToOne
     @JoinColumn(name = "original_language_id")
-    private Language originalLanguageId;
+    private Language originalLanguage;
 
     @Column(name = "rental_duration")
     private Byte rentalDuration;
@@ -50,6 +53,7 @@ public class Film {
     private BigDecimal replacementCost;
 
     @Column(name = "rating",columnDefinition = "enum('G', 'PG', 'PG-13', 'R', 'NC-17')")
+    @Convert(converter = RatingConverter.class)
     private Rating rating;
 
     @Column(name = "special_features",columnDefinition = "set('Trailers', 'Commentaries', 'Deleted Scenes', 'Behind the Scenes')")
@@ -102,20 +106,20 @@ public class Film {
         this.releaseYear = releaseYear;
     }
 
-    public Language getLanguageId() {
-        return languageId;
+    public Language getLanguage() {
+        return language;
     }
 
-    public void setLanguageId(Language languageId) {
-        this.languageId = languageId;
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 
-    public Language getOriginalLanguageId() {
-        return originalLanguageId;
+    public Language getOriginalLanguage() {
+        return originalLanguage;
     }
 
-    public void setOriginalLanguageId(Language originalLanguageId) {
-        this.originalLanguageId = originalLanguageId;
+    public void setOriginalLanguage(Language originalLanguage) {
+        this.originalLanguage = originalLanguage;
     }
 
     public Byte getRentalDuration() {
@@ -158,12 +162,26 @@ public class Film {
         this.rating = rating;
     }
 
-    public String getSpecialFeatures() {
-        return specialFeatures;
+    public Set<Feature> getSpecialFeatures() {
+        if(isNull(specialFeatures) || specialFeatures.isEmpty()){
+            return null;
+        }
+
+        Set<Feature> result = new HashSet<>();
+        String[]features = specialFeatures.split(",");
+        for (String feature : features){
+            result.add(Feature.getFeatureByValue(feature));
+        }
+        result.remove(null);
+        return result;
     }
 
-    public void setSpecialFeatures(String specialFeatures) {
-        this.specialFeatures = specialFeatures;
+    public void setSpecialFeatures(Set<Feature> features) {
+        if(isNull(features)){
+            specialFeatures=null;
+        }else{
+            specialFeatures = features.stream().map(Feature::getValue).collect(Collectors.joining(","));
+        }
     }
 
     public LocalDateTime getLastUpdate() {

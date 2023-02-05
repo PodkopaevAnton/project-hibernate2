@@ -1,31 +1,25 @@
 package ru.javarush.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Entity
-@Table(name = "category",schema = "movie")
-public class Category {
+@Table(name = "language", schema = "movie")
+public class Language {
     @Id
-    @Column(name = "category_id")
+    @Column(name = "language_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Byte id;
 
-    @Column(name = "name")
+    @Column(name = "name",columnDefinition = "char")
     private String name;
 
     @Column(name = "last_update")
     @UpdateTimestamp
     private LocalDateTime lastUpdate;
-
-    @ManyToMany
-    @JoinTable(name = "film_category",
-            joinColumns = @JoinColumn(name = "category_id",referencedColumnName = "category_id"),
-            inverseJoinColumns=@JoinColumn(name = "film_id",referencedColumnName = "film_id"))
-    private Set<Film> films;
 
     public Byte getId() {
         return id;
@@ -49,13 +43,5 @@ public class Category {
 
     public void setLastUpdate(LocalDateTime lastUpdate) {
         this.lastUpdate = lastUpdate;
-    }
-
-    public Set<Film> getFilms() {
-        return films;
-    }
-
-    public void setFilms(Set<Film> films) {
-        this.films = films;
     }
 }

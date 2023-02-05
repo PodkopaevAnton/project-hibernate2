@@ -6,46 +6,47 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "city", schema = "movie")
-public class City {
+@Table(name = "inventory",schema = "movie")
+public class Inventory {
     @Id
-    @Column(name = "city_id")
+    @Column(name = "inventory_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Short id;
-
-    @Column(name = "city")
-    private String city;
+    private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "country_id")
-    private Country country;
+    @JoinColumn(name = "film_id")
+    private Film film;
+
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private Store store;
 
     @Column(name = "last_update")
     @UpdateTimestamp
     private LocalDateTime lastUpdate;
 
-    public Short getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Short id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getCity() {
-        return city;
+    public Film getFilm() {
+        return film;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setFilm(Film film) {
+        this.film = film;
     }
 
-    public Country getCountry() {
-        return country;
+    public Store getStore() {
+        return store;
     }
 
-    public void setCountry(Country country) {
-        this.country = country;
+    public void setStore(Store store) {
+        this.store = store;
     }
 
     public LocalDateTime getLastUpdate() {
